@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from '@/context/AuthContext'; // আপনার পাথ অনুযায়ী ঠিক রাখবেন
+import { useAuth } from '@/context/AuthContext'; 
 
 const LoginPage = () => {
   const auth = useAuth();
   
-  // ফর্ম ডাটা স্টেট হ্যান্ডেল করার জন্য
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,20 +20,17 @@ const LoginPage = () => {
 
   const { loginWithGoogle, loading } = auth;
 
-  // ইমেইল এবং পাসওয়ার্ড দিয়ে লগইনের সাবমিট ফাংশন
-  // ২৪ নম্বর লাইনের handleEmailLogin ফাংশনটি সরিয়ে এটি বসান:
+ 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
 
     try {
-      // আপনার ব্যাকএন্ডের সঠিক URL-টি এখানে দিন (যেমন: http://localhost:5000/users/login)
-     // ইমেইলটি ডাইনামিকালি পাঠাতে ব্যাকটিক (``) ব্যবহার করুন
-const response = await fetch(`http://localhost:5000/users/${email}`, {
-  method: "PUT", // আপনার ব্যাকএন্ডে PUT দেওয়া আছে
+      
+const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`, {
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({ name: "User Name", email, photo: "" }), // ব্যাকএন্ডের req.body অনুযায়ী ডেটা
+  body: JSON.stringify({ name: "User Name", email, photo: "" }), 
 });
 
       const data = await response.json();
@@ -41,8 +38,7 @@ const response = await fetch(`http://localhost:5000/users/${email}`, {
       if (response.ok) {
         alert("Login Successful!");
         console.log("Logged in user data:", data);
-        // যদি ব্যাকএন্ড থেকে টোকেন দেয়, তা লোকাল স্টোরেজে রাখতে পারেন:
-        // localStorage.setItem("token", data.token);
+        
       } else {
         alert(data.message || "Invalid credentials!");
       }
@@ -54,17 +50,17 @@ const response = await fetch(`http://localhost:5000/users/${email}`, {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] p-4 md:p-10">
-      {/* মেইন কন্টেইনার কার্ড */}
+     
       <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden min-h-[550px]">
         
-        {/* বাম পাশ: ইলাস্ট্রেশন/ছবি সেকশন (bg-gradient-to-br ফিক্স করা হয়েছে) */}
+        
         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-emerald-600 to-teal-700 items-center justify-center p-12 text-white relative">
           <div className="space-y-6 text-center z-10">
             <h1 className="text-4xl font-extrabold tracking-tight">SmartResell</h1>
             <p className="text-emerald-100 text-sm max-w-sm mx-auto">
               The most reliable and modern platform to buy and sell your pre-owned items safely.
             </p>
-            {/* ইলাস্ট্রেশনের ডামী গ্রাফিক্স */}
+           
             <div className="w-64 h-64 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm mt-8 border border-white/20 shadow-inner">
               <span className="text-7xl">🤝</span>
             </div>

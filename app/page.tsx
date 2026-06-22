@@ -28,12 +28,12 @@ interface Category {
 }
 
 interface Product {
-  _id: string; // ব্যাকএন্ড মঙ্গোডিবি থেকে আসা আইডি
+  _id: string; 
   title: string;
-  price: number; // ডাটাবেসে এটি Number হিসেবে সেভ হচ্ছে
+  price: number; 
   category: string;
   condition: string;
-  images: string[]; // ছবির URL অ্যারে
+  images: string[]; 
   description: string;
 }
 
@@ -78,7 +78,7 @@ export default function HomePage() {
 
   // ব্যাকএন্ড API থেকে ডায়নামিক ডাটা ফেচ করা
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`)
       .then((res) => res.json())
       .then((data) => {
         // ১. যদি ডাটা অবজেক্টের ভেতর .success এবং .data থাকে
