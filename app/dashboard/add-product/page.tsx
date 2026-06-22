@@ -13,7 +13,7 @@ export default function AddProductPage() {
     category: 'Electronics',
     condition: 'Used',
     price: '',
-    imageUrl: '', // সহজ করার জন্য সরাসরি ইমেজ URL ইনপুট
+    imageUrl: '', 
     description: '',
   });
 
@@ -25,16 +25,16 @@ export default function AddProductPage() {
     e.preventDefault();
     setLoading(true);
 
-    // রিকোয়ারমেন্ট অনুযায়ী ডেমো সেলার ইনফো (Better-Auth সেশন থেকে পরবর্তীতে ডায়নামিক করবেন)
+    
     const productPayload = {
       title: formData.title,
       category: formData.category,
       condition: formData.condition,
       price: Number(formData.price),
-      images: [formData.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed"], // ডিফল্ট ইমেজ যদি খালি থাকে
+      images: [formData.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed"],
       description: formData.description,
       sellerInfo: {
-        userId: "user002", // ডেমো আইডি
+        userId: "user002", 
         name: "Tahmina",
         email: "tahmina@example.com",
       },
@@ -42,8 +42,8 @@ export default function AddProductPage() {
     };
 
     try {
-      // আপনার এক্সপ্রেস ব্যাকএন্ডের URL (পোর্ট ৫০০৩ বা ৫০০० যা আপনার সার্ভারে সেট করা আছে)
-      const res = await fetch('http://localhost:5000/api/products', {
+      
+      const res = await fetch('http://localhost:5000/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export default function AddProductPage() {
 
       if (result.success) {
         alert('Product Added Successfully! 🎉');
-        router.push('/dashboard/my-product'); // সফল হলে মাই প্রোডাক্ট পেজে নিয়ে যাবে
+        router.push('/dashboard/my-product'); 
       } else {
         alert('Failed to add product: ' + result.error);
       }

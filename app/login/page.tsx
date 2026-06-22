@@ -2,13 +2,16 @@
 
 import React, { useState } from "react";
 import { useAuth } from '@/context/AuthContext'; 
+import { authClient } from "@/lib/auth-client"; // 👈 Better-Auth ক্লায়েন্ট ইমপোর্ট করা হলো
+import { useRouter } from "next/navigation"; // 👈 লগইন সফল হলে রিডাইরেক্ট করার জন্য
 
 const LoginPage = () => {
   const auth = useAuth();
-  
+  const router = useRouter(); 
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false); // 👈 ইমেইল লগইনের জন্য আলাদা লোডিং স্টেট
 
   if (!auth) {
     return (
@@ -18,54 +21,59 @@ const LoginPage = () => {
     );
   }
 
-  const { loginWithGoogle, loading } = auth;
+  const { loginWithGoogle, loading: googleLoading } = auth;
 
- 
-  const handleEmailLogin = async (e) => {
+  // 📧 Better-Auth এর মাধ্যমে ইমেইল লগইন হ্যান্ডেলার
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEmailLoading(true);
 
     try {
-      
-const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`, {
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({ name: "User Name", email, photo: "" }), 
-});
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Login Successful!");
-        console.log("Logged in user data:", data);
-        
-      } else {
-        alert(data.message || "Invalid credentials!");
-      }
+      // 👈 পুরানো কাস্টম fetch মুছে Better-Auth এর অফিসিয়াল মেথড ব্যবহার করা হলো
+      await authClient.signIn.email({
+        email: email,
+        password: password,
+      }, {
+        onRequest: () => {
+          setEmailLoading(true);
+        },
+        onSuccess: (ctx) => {
+          setEmailLoading(false);
+          alert("Login Successful! 🎉");
+          console.log("Logged in user data:", ctx.data);
+          router.push("/dashboard"); // 👈 লগইন শেষে ড্যাশবোর্ডে নিয়ে যাবে
+        },
+        onError: (ctx) => {
+          setEmailLoading(false);
+          // ডাটাবেজে ইউজার না থাকলে বা পাসওয়ার্ড ভুল হলে Better-Auth সরাসরি এরর মেসেজ দেবে
+          alert(ctx.error.message || "Invalid email or password!"); 
+        }
+      });
     } catch (error) {
-      console.error("Fetch error:", error);
-      alert("Failed to connect to the server.");
+      setEmailLoading(false);
+      console.error("Login error:", error);
+      alert("Failed to connect to the authentication server.");
     }
   };
 
+  // যেকোনো একটি লগইন প্রসেস চললে বাটন ডিজেবল করার জন্য
+  const isProcessing = googleLoading || emailLoading;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] p-4 md:p-10">
-     
       <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden min-h-[550px]">
         
-        
+        {/* বাম পাশ: ব্যানার সেকশন */}
         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-emerald-600 to-teal-700 items-center justify-center p-12 text-white relative">
           <div className="space-y-6 text-center z-10">
             <h1 className="text-4xl font-extrabold tracking-tight">SmartResell</h1>
             <p className="text-emerald-100 text-sm max-w-sm mx-auto">
               The most reliable and modern platform to buy and sell your pre-owned items safely.
             </p>
-           
             <div className="w-64 h-64 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm mt-8 border border-white/20 shadow-inner">
               <span className="text-7xl">🤝</span>
             </div>
           </div>
-          {/* ব্যাকগ্রাউন্ডের ডিজাইন সার্কেল */}
           <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/5 rounded-full blur-xl"></div>
           <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-xl"></div>
         </div>
@@ -90,11 +98,12 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@gmail.com"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all"
+                  disabled={isProcessing}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
                 />
               </div>
 
-              {/* পাসওয়ার্ড ফিল্ড */}
+              {/* পাসওয়ার্ড ফিল্ড */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <input
@@ -103,11 +112,12 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all"
+                  disabled={isProcessing}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
                 />
               </div>
 
-              {/* রিমেম্বার মি ও ফরগট পাসওয়ার্ড */}
+              {/* রিমেম্বার মি ও ফরগট পাসওয়ার্ড */}
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center text-gray-600 cursor-pointer">
                   <input type="checkbox" className="rounded text-emerald-600 focus:ring-emerald-500 mr-2" />
@@ -119,13 +129,21 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`
               {/* সাইন ইন বাটন */}
               <button
                 type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-emerald-200"
+                disabled={isProcessing}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-emerald-200 disabled:opacity-50 flex items-center justify-center"
               >
-                Sign In
+                {emailLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    Signing in...
+                  </div>
+                ) : (
+                  "Sign In"
+                )}
               </button>
             </form>
 
-            {/* ডিভাইডার (flex-grow ফিক্স করা হয়েছে) */}
+            {/* ডিভাইডার */}
             <div className="relative flex py-5 items-center">
               <div className="flex-grow border-t border-gray-200"></div>
               <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-wider">Or continue with</span>
@@ -135,11 +153,11 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`
             {/* গুগল লগইন বাটন */}
             <button
               onClick={loginWithGoogle}
-              disabled={loading}
+              disabled={isProcessing}
               type="button"
               className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-50"
             >
-              {loading ? (
+              {googleLoading ? (
                 <div className="flex items-center gap-2">
                   <svg className="animate-spin h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -149,7 +167,6 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`
                 </div>
               ) : (
                 <>
-                  {/* গুগল আইকন SVG */}
                   <svg className="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>

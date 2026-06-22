@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Next.js Optimized Image Component
+import Image from "next/image"; 
 import { motion } from "framer-motion";
 import BannerSlider from "./components/BannerSlider";
 
@@ -20,7 +20,7 @@ const staggerContainer = {
   },
 };
 
-// ডাটা টাইপ ডিফাইন করা (TypeScript)
+
 interface Category {
   name: string;
   icon: string;
@@ -52,7 +52,7 @@ interface TopSeller {
   badge: string;
 }
 
-// স্ট্যাটিক ও ডামি ডাটা
+
 const categories: Category[] = [
   { name: "Electronics", icon: "💻", count: "1.2k+ Items" },
   { name: "Furniture", icon: "🛋️", count: "850+ Items" },
@@ -72,16 +72,16 @@ const topSellers: TopSeller[] = [
 ];
 
 export default function HomePage() {
-  // ডাটাবেস থেকে আসা প্রোডাক্ট রাখার স্টেট
+ 
   const [latestProducts, setLatestProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ব্যাকএন্ড API থেকে ডায়নামিক ডাটা ফেচ করা
+  
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`)
       .then((res) => res.json())
       .then((data) => {
-        // ১. যদি ডাটা অবজেক্টের ভেতর .success এবং .data থাকে
+        
         if (data && data.success && Array.isArray(data.data)) {
           setLatestProducts(data.data.slice(0, 4));
         } 

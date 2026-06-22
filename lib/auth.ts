@@ -17,7 +17,7 @@ export const auth = betterAuth({
     client,
   }),
   
-  // সামাজিক বা সোশ্যাল লগইন (যেমন: গুগল) চালু করার জন্য প্রোভাইডার কনফিগ যোগ করা হলো
+  
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -32,20 +32,20 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: "string", // ২. ফিল্ডের ডাটা টাইপ স্পষ্টভাবে উল্লেখ করে দিতে হবে
+        type: "string",
         defaultValue: "buyer",
       },
       plan: {
-        type: "string", // ফিল্ডের ডাটা টাইপ স্পষ্টভাবে উল্লেখ করে দিতে হবে
+        type: "string", 
         defaultValue: "free",
       },
     },
   },
   
   session: {
-    // ৩. cookieCache অবজেক্টের সরাসরি কনফিগারের বদলে Better-Auth এর স্ট্যান্ডার্ড সেশন কনফিগ
-    expiresIn: 60 * 60 * 24 * 7, // সেশনের মেয়াদ ৭ দিন (সেকেন্ড হিসেবে)
-    updateAge: 60 * 60 * 24, // প্রতিদিন সেশন আপডেট হবে
+   
+    expiresIn: 60 * 60 * 24 * 7, 
+    updateAge: 60 * 60 * 24, 
   },
   
   plugins: [jwt()],

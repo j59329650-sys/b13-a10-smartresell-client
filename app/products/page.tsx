@@ -25,8 +25,8 @@ export default function AllProductsPage() {
   const productsPerPage = 6; // প্রতি পেজে ৬টি করে প্রোডাক্ট দেখাবে
 
   useEffect(() => {
-    // আপনার এক্সপ্রেস ব্যাকএন্ড থেকে প্রোডাক্ট ফেচ করা
-    fetch('http://localhost:5000/api/products')
+    
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

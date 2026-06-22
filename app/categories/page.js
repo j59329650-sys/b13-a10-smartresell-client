@@ -1,10 +1,10 @@
 // app/categories/page.js
-'use client'; // ইন্টারঅ্যাক্টিভিটি (useState) ব্যবহারের জন্য
+'use client';
 
 import React, { useState } from 'react';
 
 const CategoriesPage = () => {
-  // ১. ক্যাটাগরি লিস্ট ডেটা
+ 
   const categories = [
     { id: "all", name: "All Products", icon: "🌐", bgColor: "bg-gray-100" },
     { id: "electronics", name: "Electronics", icon: "📱", bgColor: "bg-blue-100" },
@@ -13,7 +13,7 @@ const CategoriesPage = () => {
     { id: "home", name: "Home Appliances", icon: "📺", bgColor: "bg-pink-100" },
   ];
 
-  // ২. ডামি প্রোডাক্ট ডেটা (রিসেল মার্কেটের জন্য)
+ 
   const productsData = [
     { id: 1, title: "iPhone 13 Pro Max", category: "electronics", price: "75,000 TK", condition: "Excellent", img: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400" },
     { id: 2, title: "Yamaha R15 V3", category: "vehicles", price: "3,20,000 TK", condition: "Used - 1 Year", img: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400" },
