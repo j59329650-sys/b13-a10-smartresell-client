@@ -1,3 +1,4 @@
+'use client';
 import { signUp } from "@/lib/auth-client";
 import { useState } from "react";
 
