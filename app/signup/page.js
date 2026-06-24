@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { signUp } from "@/lib/auth-client"; 
 
-const SignupPage = () => { // 👈 ফাংশনের নাম SignupPage রাখা হলো
+const SignupPage = () => { 
   const auth = useAuth();
 
   const [username, setUsername] = useState("");

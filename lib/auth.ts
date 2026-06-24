@@ -8,7 +8,7 @@ if (!mongoUri) {
   throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 }
 
-// টাইপ সেফটির জন্য 'as string' যোগ করা হলো
+
 const client = new MongoClient(mongoUri as string);
 const db = client.db("smartresell");
 
@@ -42,8 +42,8 @@ export const auth = betterAuth({
   },
   
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // ১ সপ্তাহ
-    updateAge: 60 * 60 * 24, // ১ দিন
+    expiresIn: 60 * 60 * 24 * 7, 
+    updateAge: 60 * 60 * 24, 
   },
   
   plugins: [jwt()],
