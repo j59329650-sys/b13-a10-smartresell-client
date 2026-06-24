@@ -28,7 +28,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // মোবাইল মেনু স্টেট
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
 
   const { data: session, isPending } = authClient.useSession();
 
@@ -170,12 +170,15 @@ export default function DashboardLayout({
       </aside>
 
       
+     {/* মোবাইল মেনু ব্যাকড্রপ ওভারলে */}
       {isMobileMenuOpen && (
         <div 
           className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
+
+      {/* মোবাইল সাইডবার ড্রয়ার */}
       <aside className={`fixed top-0 bottom-0 left-0 w-72 bg-white z-50 flex flex-col border-r transition-transform duration-300 md:hidden ${
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       }`}>

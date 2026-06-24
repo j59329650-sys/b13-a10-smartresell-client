@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client'; // Better-Auth সেশন ইম্পোর্ট করা হলো
 
 export default function AddProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  
+  // ১. সেশন থেকে লগইন করা সেলারের ডাটা নেওয়া
+  const { data: session } = authClient.useSession();
 
   // ফরমের স্টেট
   const [formData, setFormData] = useState({
@@ -23,9 +27,15 @@ export default function AddProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    if (!session?.user) {
+      alert('Please log in first!');
+      return;
+    }
+
     setLoading(true);
 
-    
+   
     const productPayload = {
       title: formData.title,
       category: formData.category,
@@ -34,16 +44,18 @@ export default function AddProductPage() {
       images: [formData.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed"],
       description: formData.description,
       sellerInfo: {
-        userId: "user002", 
-        name: "Tahmina",
-        email: "tahmina@example.com",
+        userId: session.user.id, 
+        name: session.user.name, 
+        email: session.user.email, 
       },
       status: "available"
     };
 
     try {
       
-      const res = await fetch('http://localhost:5000/products', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      
+      const res = await fetch(`${apiUrl}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +67,8 @@ export default function AddProductPage() {
 
       if (result.success) {
         alert('Product Added Successfully! 🎉');
-        router.push('/dashboard/my-product'); 
+        
+        router.push('/dashboard/my-products'); 
       } else {
         alert('Failed to add product: ' + result.error);
       }
@@ -63,7 +76,7 @@ export default function AddProductPage() {
       console.error('Error post product:', error);
       alert('Something went wrong!');
     } finally {
-      setLoading(false);
+      loading(false);
     }
   };
 
@@ -94,7 +107,7 @@ export default function AddProductPage() {
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 outline-none"
+              className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 outline-none bg-white"
             >
               <option value="Electronics">Electronics</option>
               <option value="Furniture">Furniture</option>
@@ -110,7 +123,7 @@ export default function AddProductPage() {
               name="condition"
               value={formData.condition}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 outline-none"
+              className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 outline-none bg-white"
             >
               <option value="Used">Used</option>
               <option value="Like New">Like New</option>
