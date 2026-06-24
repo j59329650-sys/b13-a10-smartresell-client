@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { useAuth } from '@/context/AuthContext'; 
-import { authClient } from "@/lib/auth-client"; // 👈 Better-Auth ক্লায়েন্ট ইমপোর্ট করা হলো
-import { useRouter } from "next/navigation"; // 👈 লগইন সফল হলে রিডাইরেক্ট করার জন্য
+import { authClient } from "@/lib/auth-client"; 
+import { useRouter } from "next/navigation"; // 👈 এখানে "next/navigation" ঠিক করা হলো
 
 const LoginPage = () => {
   const auth = useAuth();
@@ -11,7 +11,8 @@ const LoginPage = () => {
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailLoading, setEmailLoading] = useState(false); // 👈 ইমেইল লগইনের জন্য আলাদা লোডিং স্টেট
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); 
 
   if (!auth) {
     return (
@@ -26,37 +27,33 @@ const LoginPage = () => {
   // 📧 Better-Auth এর মাধ্যমে ইমেইল লগইন হ্যান্ডেলার
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEmailLoading(true);
+    setErrorMessage(""); 
 
     try {
-      // 👈 পুরানো কাস্টম fetch মুছে Better-Auth এর অফিসিয়াল মেথড ব্যবহার করা হলো
       await authClient.signIn.email({
         email: email,
         password: password,
       }, {
         onRequest: () => {
-          setEmailLoading(true);
+          setEmailLoading(true); 
         },
         onSuccess: (ctx) => {
           setEmailLoading(false);
-          alert("Login Successful! 🎉");
-          console.log("Logged in user data:", ctx.data);
-          router.push("/dashboard"); // 👈 লগইন শেষে ড্যাশবোর্ডে নিয়ে যাবে
+          router.push("/dashboard"); 
+          router.refresh(); 
         },
         onError: (ctx) => {
-          setEmailLoading(false);
-          // ডাটাবেজে ইউজার না থাকলে বা পাসওয়ার্ড ভুল হলে Better-Auth সরাসরি এরর মেসেজ দেবে
-          alert(ctx.error.message || "Invalid email or password!"); 
+          setEmailLoading(false); 
+          setErrorMessage(ctx.error.message || "Invalid email or password!"); 
         }
       });
     } catch (error) {
       setEmailLoading(false);
       console.error("Login error:", error);
-      alert("Failed to connect to the authentication server.");
+      setErrorMessage("Failed to connect to the authentication server.");
     }
   };
 
-  // যেকোনো একটি লগইন প্রসেস চললে বাটন ডিজেবল করার জন্য
   const isProcessing = googleLoading || emailLoading;
 
   return (
@@ -82,10 +79,17 @@ const LoginPage = () => {
         <div className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center">
           <div className="w-full max-w-md mx-auto">
             {/* হেডার */}
-            <div className="mb-8">
+            <div className="mb-6">
               <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
               <p className="text-sm text-gray-500 mt-2">Please sign in to your account</p>
             </div>
+
+            {/* অন-স্ক্রিন এরর মেসেজ বক্স */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-xl text-sm mb-4 transition-all">
+                {errorMessage}
+              </div>
+            )}
 
             {/* লগইন ফর্ম */}
             <form onSubmit={handleEmailLogin} className="space-y-5">
@@ -99,7 +103,7 @@ const LoginPage = () => {
                   placeholder="example@gmail.com"
                   required
                   disabled={isProcessing}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
                 />
               </div>
 
@@ -113,7 +117,7 @@ const LoginPage = () => {
                   placeholder="••••••••"
                   required
                   disabled={isProcessing}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-gray-800 outline-none transition-all disabled:opacity-50"
                 />
               </div>
 
@@ -130,12 +134,12 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-emerald-200 disabled:opacity-50 flex items-center justify-center"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md shadow-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {emailLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                    Signing in...
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Signing in...</span>
                   </div>
                 ) : (
                   "Sign In"
@@ -155,7 +159,7 @@ const LoginPage = () => {
               onClick={loginWithGoogle}
               disabled={isProcessing}
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <div className="flex items-center gap-2">
@@ -163,7 +167,7 @@ const LoginPage = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Processing...
+                  <span>Processing...</span>
                 </div>
               ) : (
                 <>

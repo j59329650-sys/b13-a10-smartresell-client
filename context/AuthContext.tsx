@@ -16,11 +16,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, isPending } = authClient.useSession();
   const [user, setUser] = useState<any>(null);
 
+ 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== "undefined" ? window.location.origin : "");
+  
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
   const loginWithGoogle = async () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+       
+        callbackURL: `${appUrl}/dashboard`, 
       });
     } catch (error) {
       console.error("Google authentication process failed:", error);
@@ -47,8 +53,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       const syncUser = async () => {
         try {
-          // Pointing cleanly to your targeted backend server endpoint
-          await fetch(`http://localhost:5000/users/${session.user.email}`, {
+          
+          await fetch(`${backendUrl}/users/${session.user.email}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -58,7 +64,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }),
           });
         } catch (err) {
-          // Gracefully handles server downtime without breaking the UI
           console.warn("External data store synchronization offline:", err);
         }
       };
@@ -67,12 +72,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       setUser(null);
     }
-  }, [session]);
+  }, [session, backendUrl]);
 
   return (
-    <AuthContext.Provider value={{ user, loading: isPending, loginWithGoogle, logoutUser }}>
-      {children}
-    </AuthContext.Provider>
+    <div className="text-gray-800">
+      <AuthContext.Provider value={{ user, loading: isPending, loginWithGoogle, logoutUser }}>
+        {children}
+      </AuthContext.Provider>
+    </div>
   );
 };
 
