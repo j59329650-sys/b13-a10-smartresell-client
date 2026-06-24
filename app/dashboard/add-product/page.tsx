@@ -80,7 +80,7 @@ export default function AddProductPage() {
       console.log(result);
 
       if (result.insertedId || result.acknowledged) {
-        alert("✅ Product Added Successfully!");
+        alert("Product Added Successfully!");
 
         setFormData({
           title: "",
@@ -93,11 +93,11 @@ export default function AddProductPage() {
 
         router.push("/dashboard/my-products");
       } else {
-        alert("❌ Failed to add product");
+        alert(" Failed to add product");
       }
     } catch (error) {
       console.error("Add Product Error:", error);
-      alert("❌ Something went wrong!");
+      alert(" Something went wrong!");
     } finally {
       setLoading(false);
     }
