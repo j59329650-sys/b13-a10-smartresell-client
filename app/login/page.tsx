@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from '@/context/AuthContext'; 
 import { authClient } from "@/lib/auth-client"; 
-import { useRouter } from "next/navigation"; // 👈 এখানে "next/navigation" ঠিক করা হলো
+import { useRouter } from "next/navigation"; 
 
 const LoginPage = () => {
   const auth = useAuth();
@@ -24,7 +24,7 @@ const LoginPage = () => {
 
   const { loginWithGoogle, loading: googleLoading } = auth;
 
-  // 📧 Better-Auth এর মাধ্যমে ইমেইল লগইন হ্যান্ডেলার
+  
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(""); 
@@ -60,7 +60,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] p-4 md:p-10">
       <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden min-h-[550px]">
         
-        {/* বাম পাশ: ব্যানার সেকশন */}
+       
         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-emerald-600 to-teal-700 items-center justify-center p-12 text-white relative">
           <div className="space-y-6 text-center z-10">
             <h1 className="text-4xl font-extrabold tracking-tight">SmartResell</h1>
@@ -75,25 +75,25 @@ const LoginPage = () => {
           <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-xl"></div>
         </div>
 
-        {/* ডান পাশ: লগইন ফর্ম সেকশন */}
+        
         <div className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center">
           <div className="w-full max-w-md mx-auto">
-            {/* হেডার */}
+            
             <div className="mb-6">
               <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
               <p className="text-sm text-gray-500 mt-2">Please sign in to your account</p>
             </div>
 
-            {/* অন-স্ক্রিন এরর মেসেজ বক্স */}
+           
             {errorMessage && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-xl text-sm mb-4 transition-all">
                 {errorMessage}
               </div>
             )}
 
-            {/* লগইন ফর্ম */}
+           
             <form onSubmit={handleEmailLogin} className="space-y-5">
-              {/* ইমেইল ফিল্ড */}
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                 <input
@@ -107,7 +107,7 @@ const LoginPage = () => {
                 />
               </div>
 
-              {/* পাসওয়ার্ড ফিল্ড */}
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <input
@@ -121,7 +121,7 @@ const LoginPage = () => {
                 />
               </div>
 
-              {/* রিমেম্বার মি ও ফরগট পাসওয়ার্ড */}
+              
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center text-gray-600 cursor-pointer">
                   <input type="checkbox" className="rounded text-emerald-600 focus:ring-emerald-500 mr-2" />
@@ -130,7 +130,7 @@ const LoginPage = () => {
                 <a href="#" className="text-sm font-medium text-emerald-600 hover:underline">Forgot password?</a>
               </div>
 
-              {/* সাইন ইন বাটন */}
+              
               <button
                 type="submit"
                 disabled={isProcessing}
@@ -147,7 +147,7 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* ডিভাইডার */}
+           
             <div className="relative flex py-5 items-center">
               <div className="flex-grow border-t border-gray-200"></div>
               <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-wider">Or continue with</span>

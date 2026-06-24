@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/auth-client'; // Better-Auth সেশন ইম্পোর্ট করা হলো
+import { authClient } from '@/lib/auth-client'; 
 
 export default function AddProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   
-  // ১. সেশন থেকে লগইন করা সেলারের ডাটা নেওয়া
+  
   const { data: session } = authClient.useSession();
 
-  // ফরমের স্টেট
+ 
   const [formData, setFormData] = useState({
     title: '',
     category: 'Electronics',
@@ -53,7 +53,7 @@ export default function AddProductPage() {
 
     try {
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
       
       const res = await fetch(`${apiUrl}/products`, {
         method: 'POST',
