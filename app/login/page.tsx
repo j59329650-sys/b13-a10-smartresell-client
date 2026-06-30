@@ -154,7 +154,7 @@ const LoginPage = () => {
               <div className="flex-grow border-t border-gray-200"></div>
             </div>
 
-            {/* গুগল লগইন বাটন */}
+            
             <button
               onClick={loginWithGoogle}
               disabled={isProcessing}
