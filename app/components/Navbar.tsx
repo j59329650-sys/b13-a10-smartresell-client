@@ -43,6 +43,7 @@ const Navbar = () => {
               <Link href="/products" className="font-medium text-gray-700 hover:text-emerald-600 transition">Products</Link>
               <Link href="/categories" className="font-medium text-gray-700 hover:text-emerald-600 transition">Categories</Link>
               <Link href="/dashboard" className="font-medium text-gray-700 hover:text-emerald-600 transition">Dashboard</Link>
+              <Link href="/dashboard" className="font-medium text-gray-700 hover:text-emerald-600 transition">About</Link>
             </div>
 
             {/* Right Side */}
