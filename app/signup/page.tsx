@@ -15,7 +15,7 @@ const SignupPage = () => {
   const [role, setRole] = useState("buyer");
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = async (e: React.FormEvent) => {
+ const handleSignup = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
