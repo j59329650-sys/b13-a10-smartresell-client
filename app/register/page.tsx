@@ -16,10 +16,8 @@ export default function RegisterPage() {
       email,
       password,
       name,
-      data: {
-        role: role, 
-        plan: "free"
-      }
+      role: role,
+      plan: "free"
     }, {
       onSuccess: () => {
         alert("Registration Successful!");
@@ -61,7 +59,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* পাসওয়ার্ড ইনপুট */}
+          {/* পাসওয়ার্ড ইনপুট */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input 
